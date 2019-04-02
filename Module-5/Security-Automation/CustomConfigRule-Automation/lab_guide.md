@@ -263,7 +263,7 @@ def sg_add_ingress(pub_ip, sg):
 
 ## Part 9 : Check that it works!
 
-9.1. Change the security group ssh settings to be open (SSH source: anywhere).
+9.1. Change the security group ssh settings to be open.
 
 9.2. You should see the config rule change compliance status.
 
