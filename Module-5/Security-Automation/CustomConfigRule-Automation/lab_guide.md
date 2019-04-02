@@ -8,8 +8,8 @@ This could potentially be used to ensure that a production web server security g
 ## Part 1: Create a security group unrestricted SSH.
 
 1.1. From the AWS Console, go to the VPC console.
-1.2. Create a security group with SSH access which is open to anywhere.
 
+1.2. Create a security group with SSH access which is open to anywhere.
 
 We will be simulating Config Rule checks on the following environment:
 
@@ -23,13 +23,13 @@ We will be simulating Config Rule checks on the following environment:
 
 2.1. From IAM, create a Role called **MyConfigRole**. 
 
-2.2. From the service selection menu, select **Config**.
+2.2. From the service selection menu, select **Config**, select **Config - Customizable**.
 
 2.3. Attach the following policies:
 
 * AWSConfigRole
 * AWSLambdaExecute
-* AWSConfigRulesExecuteRole
+* AWSConfigRulesExecutionRole
 * Add the following inline policy:
 
 ```
@@ -51,11 +51,11 @@ We will be simulating Config Rule checks on the following environment:
 
 ## Part 3: Set up the recorder
 
-3.1. Go through and set up the recorder, according to the defaults.
+3.1. Go through AWS Config and set up the recorder, according to the defaults.
 
-3.2. Ensure that the role that you created in (1) is included at the bottom of the page.
+3.2. Ensure that the role that you created in (2) is included at the bottom of the page.
 
-
+![alt text](https://github.com/yoyothai00/aws-security-labs-bkk/blob/master/Module-5/Security-Automation/CustomConfigRule-Automation/images/image1-2.png )
 
 ## Part 4: Add the unrestricted SSH rule within AWS Config
 
@@ -80,8 +80,11 @@ We will be simulating Config Rule checks on the following environment:
 ## Part 6: Create a Lambda Role
 
 6.1. From the AWS management console, go to IAM.
+
 6.2. Create a role, and choose Lambda as the service to use the role.
+
 6.3. Create a lambda role called **MyLambdaRole** and add the following inline policy:
+
 
 ```
 {
@@ -117,7 +120,7 @@ We will be simulating Config Rule checks on the following environment:
 * Use Python 3.6 as a runtime
 * Select the Lambda Role **LambdaConfigRole** which you created earlier.
 
-When you are ready, add the following code:
+When you are ready, add the following code (Make sure that SNS_TOPIC is correct):
 
 ```
 
@@ -139,7 +142,7 @@ EC2_CLIENT = boto3.client('ec2')
 
 # AWS SNS Settings
 SNS_CLIENT = boto3.client('sns')
-SNS_TOPIC = 'arn:aws:sns:us-east-1:' + ACCOUNT_ID + ':' + 'ConfigRule'
+SNS_TOPIC = 'arn:aws:sns:ap-southeast-1:' + ACCOUNT_ID + ':' + 'ConfigTopic'
 SNS_SUBJECT = 'Compliance Update'
 
 
@@ -260,7 +263,7 @@ def sg_add_ingress(pub_ip, sg):
 
 ## Part 9 : Check that it works!
 
-9.1. Change the security group ssh settings to be open.
+9.1. Change the security group ssh settings to be open (SSH source: anywhere).
 
 9.2. You should see the config rule change compliance status.
 
